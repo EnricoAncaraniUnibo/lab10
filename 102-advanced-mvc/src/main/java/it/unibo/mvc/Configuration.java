@@ -1,5 +1,10 @@
 package it.unibo.mvc;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+
 
 /**
  * Encapsulates the concept of configuration.
@@ -107,7 +112,19 @@ public final class Configuration {
                 throw new IllegalStateException("The builder can only be used once");
             }
             consumed = true;
+            readConfigurationFile();
             return new Configuration(max, min, attempts);
+        }
+
+        public void readConfigurationFile() {
+            try (BufferedReader bis = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream("config.yml")))) {
+                String s = bis.readLine();
+                min = Integer.parseInt(s.split(" ")[1]);
+                s = bis.readLine();
+                max = Integer.parseInt(s.split(" ")[1]);
+                s = bis.readLine();
+                attempts = Integer.parseInt(s.split(" ")[1]);
+            } catch (IOException e) {}
         }
     }
 }
